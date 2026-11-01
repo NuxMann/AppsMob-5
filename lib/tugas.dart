@@ -173,12 +173,16 @@ class ProfileStats extends StatelessWidget {
   }
 }
 
-/// Custom Widget StatItem
+/// Custom Widget Reusable untuk Item Angka & Label Statistik
 class StatItem extends StatelessWidget {
   final String count;
   final String label;
 
-  const StatItem({super.key, required this.count, required this.label});
+  const StatItem({
+    super.key,
+    required this.count,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
