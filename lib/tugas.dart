@@ -79,13 +79,8 @@ class MainApp extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: experiences.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      child: ListTile(
-                        leading: const Icon(Icons.work, color: Colors.blueAccent),
-                        title: Text(experiences[index]),
-                      ),
+                    return ExperienceCard(
+                      title: experiences[index],
                     );
                   },
                 ),
@@ -205,6 +200,50 @@ class StatItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Custom Widget untuk Item List Pengalaman Kerja
+class ExperienceCard extends StatelessWidget {
+  final String title;
+
+  const ExperienceCard({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.blueAccent.withOpacity(0.3), 
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16), 
+        side: BorderSide(color: Colors.blue.shade100, width: 1), 
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.work_history,
+            color: Colors.blueAccent,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+      ),
     );
   }
 }
