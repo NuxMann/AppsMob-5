@@ -1,91 +1,134 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MainApp());
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: ProfilePage(),
+  ));
 }
 
-class MainApp extends StatelessWidget {
-  MainApp({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
-  final String userName = 'Fahry Achmad Wibowo';
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  // Variabel userName dibuat dinamis agar nilainya bisa diperbarui di UI
+  String userName = 'Fahry Achmad Wibowo';
   final String role = 'Material Chemical Order & Control';
 
   final List<String> experiences = [
     'PT Gajah Tunggal Tbk - Material Chemical Order & Control (2023 - Sekarang)',
   ];
 
+  /// Fungsi untuk menampilkan Form Dialog Edit Profil
+  void _showEditProfileDialog() {
+    final TextEditingController nameController =
+        TextEditingController(text: userName);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text('Edit Profil'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Lengkap',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Tutup dialog tanpa menyimpan
+              },
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Memperbarui state userName dan memperbarui UI
+                setState(() {
+                  userName = nameController.text;
+                });
+                Navigator.of(dialogContext).pop(); // Tutup dialog
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profil berhasil diperbarui!'),
+                  ),
+                );
+              },
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Aplikasi Profil',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profil Pengguna'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Profil Pengguna'),
-          centerTitle: true,
-          backgroundColor: Colors.blueAccent,
-          foregroundColor: Colors.white,
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Custom Widget ProfileAvatar
-                const ProfileAvatar(),
-                
-                const SizedBox(height: 16),
-                
-                // Custom Widget ProfileInfo dengan passing parameter
-                ProfileInfo(
-                  userName: userName,
-                  role: role,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const ProfileAvatar(),
+              const SizedBox(height: 16),
+              ProfileInfo(
+                userName: userName,
+                role: role,
+              ),
+              const SizedBox(height: 24),
+              
+              // Tombol Edit Profil dengan Aksi showDialog
+              ElevatedButton.icon(
+                onPressed: _showEditProfileDialog,
+                icon: const Icon(Icons.edit),
+                label: const Text('Edit Profil'),
+              ),
+              
+              const SizedBox(height: 24),
+              const ProfileStats(),
+              const SizedBox(height: 24),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Pengalaman Kerja',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                
-                const SizedBox(height: 24),
-                
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Fitur edit belum aktif pada modul statis.'),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.edit),
-                  label: const Text('Edit Profil'),
-                ),
-                
-                // Manggil ProfileStats
-                const ProfileStats(),
-                
-                const SizedBox(height: 24),
-                
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Pengalaman Kerja',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                
-                const Divider(),
-                
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: experiences.length,
-                  itemBuilder: (context, index) {
-                    return ExperienceCard(
-                      title: experiences[index],
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+              const Divider(),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: experiences.length,
+                itemBuilder: (context, index) {
+                  return ExperienceCard(
+                    title: experiences[index],
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
